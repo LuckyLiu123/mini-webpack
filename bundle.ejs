@@ -1,32 +1,31 @@
 ;(function(modules){
 
-    function require(filename) {
+    function require(id) {
 
-        const fn = modules[filename];
+        const [fn, mapping] = modules[id];
 
-        //cjs 的规范
         const module = {
             exports: {}
         };
 
-        fn(require, module, module.exports);
+        function localRequire(filename) {
+            const id = mapping[filename];
+            return require(id);
+        }
+
+        fn(localRequire, module, module.exports);
 
         return module.exports;
     }
 
-    require('./main.js');
+    require(1);
 
 })({
-    './main.js':  function (require, module, exports) {
-        const { foo } = require('./foo.js');
-        console.log('main.js');
-        foo();
-    },
-    './foo.js': function (require, module, exports){
-        exports.foo = function foo(){
-            console.log('foo');
-        }
-    }
+    <% Object.keys(modules).forEach(function(key){ %>
+        <%- key %>: [function (require, module, exports) {
+            <%- modules[key][0] %>
+        }, <%- JSON.stringify(modules[key][1]) %>],
+    <% }) %>
 })
 
 

@@ -12,6 +12,10 @@
 ## 如何生成 bundle.js ##
 
 
+比较完整的代码
+https://github.com/cuixiaorui/mini-webpack
+
+
 
 
 
